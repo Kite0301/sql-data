@@ -7,6 +7,15 @@ def get_age
   get_random_index(array) + 13
 end
 
+def get_name(gender, male_names, female_names)
+  case gender
+    when 0 then
+      male_names.sample
+    when 1 then
+      female_names.sample
+  end
+end
+
 def get_random_index(array)
   total_weight = array.inject(:+)
   value = rand(total_weight) + 1
@@ -26,12 +35,21 @@ end
 File.open("users.sql", "w") do |f|
   f.puts 'CREATE TABLE IF NOT EXISTS "users" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "gender" integer,"age" integer);'
   f.puts 'INSERT INTO users VALUES'
+  male_names = []
+  female_names = []
+  File.open("male_names.txt", "r") do |f|
+    male_names = f.read.split(/\R/)
+  end
+  File.open("female_names.txt", "r") do |f|
+    female_names = f.read.split(/\R/)
+  end
 
   325.times do |i|
     id = i + 1
     gender = get_gender
+    name = get_name(gender, male_names, female_names)
     age = get_age
-    f.print "(#{id},#{gender},#{age}),"
+    f.print "(#{id},\"#{name}\",#{gender},#{age}),"
     if (i + 1) % 50 == 0
       f.print "\n"
     end
