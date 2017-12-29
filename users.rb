@@ -7,12 +7,12 @@ def get_age
   get_random_index(array) + 13
 end
 
-def get_name(gender, male_names, female_names)
+def get_name(gender, male_names, female_names, number)
   case gender
     when 0 then
-      male_names.sample
+      male_names[number]
     when 1 then
-      female_names.sample
+      female_names[number]
   end
 end
 
@@ -38,16 +38,16 @@ File.open("users.sql", "w") do |f|
   male_names = []
   female_names = []
   File.open("male_names.txt", "r") do |f|
-    male_names = f.read.split(/\R/)
+    male_names = f.read.split(/\R/).uniq
   end
   File.open("female_names.txt", "r") do |f|
-    female_names = f.read.split(/\R/)
+    female_names = f.read.split(/\R/).uniq
   end
 
   325.times do |i|
     id = i + 1
     gender = get_gender
-    name = get_name(gender, male_names, female_names)
+    name = get_name(gender, male_names, female_names, i)
     age = get_age
     f.print "(#{id},\"#{name}\",#{gender},#{age}),"
     if (i + 1) % 50 == 0
